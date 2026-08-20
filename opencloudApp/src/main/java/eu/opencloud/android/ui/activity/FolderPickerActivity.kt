@@ -29,6 +29,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -56,7 +57,11 @@ open class FolderPickerActivity : FileActivity(),
 
     private lateinit var binding: FilesFolderPickerBinding
 
-
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            handleOnBackPressedInternal()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.d("onCreate() start")
@@ -134,6 +139,8 @@ open class FolderPickerActivity : FileActivity(),
             initAndShowListOfFilesFragment()
         }
 
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         Timber.d("onCreate() end")
     }
 
@@ -175,14 +182,14 @@ open class FolderPickerActivity : FileActivity(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
             }
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onBackPressed() {
+    private fun handleOnBackPressedInternal() {
         val currentDirDisplayed = mainFileListFragment?.getCurrentFile()
         // If current file is null (we are in the spaces list, for example), close the activity
         if (currentDirDisplayed == null) {
