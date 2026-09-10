@@ -50,6 +50,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -201,6 +202,19 @@ class FileDisplayActivity : FileActivity(),
 
     private var isLightUser = false
     private var isMultiPersonal = false
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            onBackPressed()
+        }
+    }
+
+    fun addOnBackPressedCallback() {
+        val viewLifecycleOwner = mainFileListFragment?.viewLifecycleOwner
+        viewLifecycleOwner?.let {
+            onBackPressedDispatcher.addCallback(it, onBackPressedCallback)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.v("onCreate() start")
@@ -536,6 +550,7 @@ class FileDisplayActivity : FileActivity(),
         transaction.replace(R.id.right_fragment_container, fragment, TAG_SECOND_FRAGMENT)
         transaction.commitNow()
         updateFragmentsVisibility(true)
+        mainFileListFragment?.collapseFab()
     }
 
     private fun showBottomNavBar(show: Boolean) {
@@ -844,6 +859,8 @@ class FileDisplayActivity : FileActivity(),
         syncIntentFilter.addAction(FileSyncAdapter.EVENT_FULL_SYNC_FOLDER_CONTENTS_SYNCED)
         syncBroadcastReceiver = SyncBroadcastReceiver()
         localBroadcastManager!!.registerReceiver(syncBroadcastReceiver!!, syncIntentFilter)
+
+        addOnBackPressedCallback()
 
         showDialogs()
         Timber.v("onResume() end")
