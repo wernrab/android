@@ -536,6 +536,7 @@ class FileDisplayActivity : FileActivity(),
         transaction.replace(R.id.right_fragment_container, fragment, TAG_SECOND_FRAGMENT)
         transaction.commitNow()
         updateFragmentsVisibility(true)
+        mainFileListFragment?.collapseFab()
     }
 
     private fun showBottomNavBar(show: Boolean) {

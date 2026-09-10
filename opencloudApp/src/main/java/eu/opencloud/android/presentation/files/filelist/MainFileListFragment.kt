@@ -43,6 +43,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
@@ -73,6 +74,7 @@ import eu.opencloud.android.domain.exceptions.TooEarlyException
 import eu.opencloud.android.domain.files.model.FileListOption
 import eu.opencloud.android.domain.files.model.FileMenuOption
 import eu.opencloud.android.domain.files.model.OCFile
+import eu.opencloud.android.domain.files.model.OCFile.Companion.ROOT_PARENT_ID
 import eu.opencloud.android.domain.files.model.OCFile.Companion.ROOT_PATH
 import eu.opencloud.android.domain.files.model.OCFileSyncInfo
 import eu.opencloud.android.domain.files.model.OCFileWithSyncInfo
@@ -181,6 +183,17 @@ class MainFileListFragment : Fragment(),
     private var openInWebProviders: Map<String, Int> = hashMapOf()
 
     private var isMultiPersonal = false
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            if (isFabExpanded()) {
+                collapseFab()
+                setFabMainContentDescription()
+            } else {
+                onBrowseUp()
+            }
+        }
+    }
 
     private var menu: Menu? = null
     private var checkedFiles: List<OCFile> = emptyList()
@@ -328,6 +341,8 @@ class MainFileListFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isMultiPersonal = capabilityViewModel.checkMultiPersonal()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
+        updateBackPressedCallbackState()
         initViews()
         subscribeToViewModels()
     }
@@ -497,8 +512,15 @@ class MainFileListFragment : Fragment(),
 
     }
 
+    private fun updateBackPressedCallbackState() {
+        val parentId = mainFileListViewModel.currentFolderDisplayed.value.parentId
+        val isInSubfolder = parentId != null && parentId != ROOT_PARENT_ID
+        onBackPressedCallback.isEnabled = isFabExpanded() || isInSubfolder
+    }
+
     private fun observeCurrentFolderDisplayed() {
         collectLatestLifecycleFlow(mainFileListViewModel.currentFolderDisplayed) { currentFolderDisplayed: OCFile ->
+            updateBackPressedCallbackState()
             fileActions?.onCurrentFolderUpdated(currentFolderDisplayed, mainFileListViewModel.getSpace())
             val fileListOption = mainFileListViewModel.fileListOption.value
             val refreshFolderNeeded = fileListOption.isAllFiles() ||
@@ -1008,6 +1030,7 @@ class MainFileListFragment : Fragment(),
                 (newFileListOption.isSharedByLink() && currentFolder.remotePath != ROOT_PATH)
         if (!isFabSupportedView || isPickingAFolder() ||
             (!currentFolder.hasAddFilePermission && !currentFolder.hasAddSubdirectoriesPermission)) {
+            collapseFab()
             toggleFabVisibility(false)
         } else {
             toggleFabVisibility(true)
@@ -1057,6 +1080,7 @@ class MainFileListFragment : Fragment(),
                 fabMkdir.isFocusable = isFabExpanded()
                 fabNewfile.isFocusable = isFabExpanded()
                 fabNewshortcut.isFocusable = isFabExpanded()
+                updateBackPressedCallbackState()
                 if (fabMain.isExpanded) {
                     binding.fabMain.findViewById<AddFloatingActionButton>(com.getbase.floatingactionbutton.R.id.fab_expand_menu_button)
                         .contentDescription = getString(R.string.content_description_add_new_content_expanded)
@@ -1128,10 +1152,10 @@ class MainFileListFragment : Fragment(),
             fabNewfile.isFocusable = false
             fabNewshortcut.isFocusable = false
         }
-
+        updateBackPressedCallbackState()
     }
 
-    fun isFabExpanded() = binding.fabMain.isExpanded
+    fun isFabExpanded() = binding.fabMain.isVisible && binding.fabMain.isExpanded
 
     fun setFabMainContentDescription() {
         binding.fabMain.findViewById<AddFloatingActionButton>(com.getbase.floatingactionbutton.R.id.fab_expand_menu_button).contentDescription =
