@@ -513,7 +513,7 @@ class MainFileListFragment : Fragment(),
     }
 
     private fun updateBackPressedCallbackState() {
-oioioooo        val parentId = mainFileListViewModel.currentFolderDisplayed.value.parentId
+        val parentId = mainFileListViewModel.currentFolderDisplayed.value.parentId
         val isInSubfolder = parentId != null && parentId != ROOT_PARENT_ID
         onBackPressedCallback.isEnabled = isFabExpanded() || isInSubfolder
     }
