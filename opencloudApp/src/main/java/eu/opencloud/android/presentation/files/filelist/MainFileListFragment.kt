@@ -513,7 +513,7 @@ class MainFileListFragment : Fragment(),
     }
 
     private fun updateBackPressedCallbackState() {
-        val parentId = mainFileListViewModel.currentFolderDisplayed.value.parentId
+oioioooo        val parentId = mainFileListViewModel.currentFolderDisplayed.value.parentId
         val isInSubfolder = parentId != null && parentId != ROOT_PARENT_ID
         onBackPressedCallback.isEnabled = isFabExpanded() || isInSubfolder
     }
@@ -1030,6 +1030,7 @@ class MainFileListFragment : Fragment(),
                 (newFileListOption.isSharedByLink() && currentFolder.remotePath != ROOT_PATH)
         if (!isFabSupportedView || isPickingAFolder() ||
             (!currentFolder.hasAddFilePermission && !currentFolder.hasAddSubdirectoriesPermission)) {
+            collapseFab()
             toggleFabVisibility(false)
         } else {
             toggleFabVisibility(true)
@@ -1154,7 +1155,7 @@ class MainFileListFragment : Fragment(),
         updateBackPressedCallbackState()
     }
 
-    fun isFabExpanded() = binding.fabMain.isExpanded
+    fun isFabExpanded() = binding.fabMain.isVisible && binding.fabMain.isExpanded
 
     fun setFabMainContentDescription() {
         binding.fabMain.findViewById<AddFloatingActionButton>(com.getbase.floatingactionbutton.R.id.fab_expand_menu_button).contentDescription =
