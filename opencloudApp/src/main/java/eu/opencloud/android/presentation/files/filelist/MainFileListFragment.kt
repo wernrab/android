@@ -344,7 +344,8 @@ class MainFileListFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isMultiPersonal = capabilityViewModel.checkMultiPersonal()
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
+        var x = requireActivity() as FileDisplayActivity
+        x.onBackPressedDispatcher.addCallback(viewLifecycleOwner, x.xxx())
         updateBackPressedCallbackState()
         initViews()
         subscribeToViewModels()
