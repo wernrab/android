@@ -55,6 +55,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import coil.load
@@ -344,9 +345,9 @@ class MainFileListFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isMultiPersonal = capabilityViewModel.checkMultiPersonal()
-        var x = requireActivity() as FileDisplayActivity
-        x.onBackPressedDispatcher.addCallback(viewLifecycleOwner, x.xxx())
-        updateBackPressedCallbackState()
+        val activity = requireActivity() as FileDisplayActivity
+        activity.addOnBackPressedCallback(viewLifecycleOwner) // WR woanders hin?
+        updateBackPressedCallbackState() // WR weg?
         initViews()
         subscribeToViewModels()
     }
