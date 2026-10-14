@@ -184,14 +184,17 @@ class MainFileListFragment : Fragment(),
 
     private var isMultiPersonal = false
 
-    private val onBackPressedCallback = object : OnBackPressedCallback(false) {
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            val x = 5
+/*
             if (isFabExpanded()) {
                 collapseFab()
                 setFabMainContentDescription()
             } else {
                 onBrowseUp()
             }
+*/
         }
     }
 
@@ -515,7 +518,7 @@ class MainFileListFragment : Fragment(),
     private fun updateBackPressedCallbackState() {
         val parentId = mainFileListViewModel.currentFolderDisplayed.value.parentId
         val isInSubfolder = parentId != null && parentId != ROOT_PARENT_ID
-        onBackPressedCallback.isEnabled = isFabExpanded() || isInSubfolder
+/*        onBackPressedCallback.isEnabled = isFabExpanded() || isInSubfolder*/
     }
 
     private fun observeCurrentFolderDisplayed() {
