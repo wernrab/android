@@ -762,6 +762,8 @@ class FileDisplayActivity : FileActivity(),
         fileOperationsViewModel.performOperation(copyOperation)
     }
 
+
+    // This is no longer directly called in newer Android versions, see also onBackPressedCallback.
     override fun onBackPressed() {
         val isFabOpen = mainFileListFragment?.isFabExpanded() ?: false
 
