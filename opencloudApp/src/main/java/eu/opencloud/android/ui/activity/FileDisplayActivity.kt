@@ -210,8 +210,11 @@ class FileDisplayActivity : FileActivity(),
         }
     }
 
-    fun addOnBackPressedCallback(viewLifecycleOwner: LifecycleOwner) {
-        onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
+    fun addOnBackPressedCallback() {
+        val viewLifecycleOwner = mainFileListFragment?.viewLifecycleOwner
+        viewLifecycleOwner?.let {
+            onBackPressedDispatcher.addCallback(it, onBackPressedCallback)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

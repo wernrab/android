@@ -329,7 +329,7 @@ class MainFileListFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         isMultiPersonal = capabilityViewModel.checkMultiPersonal()
         val activity = requireActivity() as FileDisplayActivity
-        activity.addOnBackPressedCallback(viewLifecycleOwner) // WR woanders hin?
+        activity.addOnBackPressedCallback() // WR woanders hin?
         initViews()
         subscribeToViewModels()
     }
