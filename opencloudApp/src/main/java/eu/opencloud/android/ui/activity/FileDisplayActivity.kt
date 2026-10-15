@@ -210,10 +210,8 @@ class FileDisplayActivity : FileActivity(),
     }
 
     fun addOnBackPressedCallback() {
-        val viewLifecycleOwner = mainFileListFragment?.viewLifecycleOwner
-        viewLifecycleOwner?.let {
-            onBackPressedDispatcher.addCallback(it, onBackPressedCallback)
-        }
+        onBackPressedCallback.remove()
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -320,6 +318,8 @@ class FileDisplayActivity : FileActivity(),
                 bottomMargin = insets.bottom
             }
         }
+
+        addOnBackPressedCallback()
 
         Timber.v("onCreate() end")
     }
@@ -859,8 +859,6 @@ class FileDisplayActivity : FileActivity(),
         syncIntentFilter.addAction(FileSyncAdapter.EVENT_FULL_SYNC_FOLDER_CONTENTS_SYNCED)
         syncBroadcastReceiver = SyncBroadcastReceiver()
         localBroadcastManager!!.registerReceiver(syncBroadcastReceiver!!, syncIntentFilter)
-
-        addOnBackPressedCallback()
 
         showDialogs()
         Timber.v("onResume() end")
