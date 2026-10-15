@@ -861,6 +861,8 @@ class FileDisplayActivity : FileActivity(),
         syncBroadcastReceiver = SyncBroadcastReceiver()
         localBroadcastManager!!.registerReceiver(syncBroadcastReceiver!!, syncIntentFilter)
 
+        addOnBackPressedCallback()
+
         showDialogs()
         Timber.v("onResume() end")
     }
