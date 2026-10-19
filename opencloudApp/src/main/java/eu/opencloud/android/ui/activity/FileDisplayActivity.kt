@@ -205,7 +205,7 @@ class FileDisplayActivity : FileActivity(),
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            onBackPressed()
+            handleBackPressedInternal()
         }
     }
 
@@ -763,8 +763,12 @@ class FileDisplayActivity : FileActivity(),
     }
 
 
-    // This is no longer directly called in newer Android versions, see also onBackPressedCallback.
+    // This might not be directly called on some devices, see also onBackPressedCallback.
     override fun onBackPressed() {
+        handleBackPressedInternal()
+    }
+
+    private fun handleBackPressedInternal() {
         val isFabOpen = mainFileListFragment?.isFabExpanded() ?: false
 
         /*

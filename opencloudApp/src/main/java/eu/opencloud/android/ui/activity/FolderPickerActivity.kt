@@ -59,7 +59,7 @@ open class FolderPickerActivity : FileActivity(),
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            onBackPressed()
+            handleBackPressedInternal()
         }
     }
 
@@ -194,8 +194,12 @@ open class FolderPickerActivity : FileActivity(),
         return super.onOptionsItemSelected(item)
     }
 
-    // This is no longer directly called in newer Android versions, see also onBackPressedCallback.
+    // This might not be directly called on some devices, see also onBackPressedCallback.
     override fun onBackPressed() {
+        handleBackPressedInternal()
+    }
+
+    private fun handleBackPressedInternal() {
         val currentDirDisplayed = mainFileListFragment?.getCurrentFile()
         // If current file is null (we are in the spaces list, for example), close the activity
         if (currentDirDisplayed == null) {
