@@ -209,7 +209,7 @@ class FileDisplayActivity : FileActivity(),
         }
     }
 
-    fun addOnBackPressedCallback() {
+    private fun addOnBackPressedCallback() {
         onBackPressedCallback.remove()
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
@@ -761,7 +761,6 @@ class FileDisplayActivity : FileActivity(),
         )
         fileOperationsViewModel.performOperation(copyOperation)
     }
-
 
     // This might not be directly called on some devices, see also onBackPressedCallback.
     override fun onBackPressed() {

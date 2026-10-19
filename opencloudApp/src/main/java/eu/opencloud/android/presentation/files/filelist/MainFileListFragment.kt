@@ -1132,8 +1132,9 @@ class MainFileListFragment : Fragment(),
 
     fun setFabMainContentDescription(expanded: Boolean) {
         val resId = if (expanded) {R.string.content_description_add_new_content_expanded } else { R.string.content_description_add_new_content }
-        binding.fabMain.findViewById<AddFloatingActionButton>(com.getbase.floatingactionbutton.R.id.fab_expand_menu_button).contentDescription =
-            getString(resId)
+        binding.fabMain.findViewById<AddFloatingActionButton>(
+            com.getbase.floatingactionbutton.R.id.fab_expand_menu_button
+        ).contentDescription = getString(resId)
     }
 
     private fun openBottomSheetToUploadFiles() {

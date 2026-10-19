@@ -63,7 +63,7 @@ open class FolderPickerActivity : FileActivity(),
         }
     }
 
-    fun addOnBackPressedCallback() {
+    private fun addOnBackPressedCallback() {
         onBackPressedCallback.remove()
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
