@@ -1116,7 +1116,8 @@ class MainFileListFragment : Fragment(),
     }
 
     fun collapseFab() {
-        _binding?.apply {
+        val binding = _binding ?: return
+        binding.apply {
             fabMain.collapse()
             fabUpload.isFocusable = false
             fabTakePhoto.isFocusable = false
