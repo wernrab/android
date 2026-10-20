@@ -1128,7 +1128,10 @@ class MainFileListFragment : Fragment(),
         setFabMainContentDescription(false)
     }
 
-    fun isFabExpanded() = binding.fabMain.isVisible && binding.fabMain.isExpanded
+    fun isFabExpanded(): Boolean {
+        val binding = _binding ?: return false
+        return binding.fabMain.isVisible && binding.fabMain.isExpanded
+    }
 
     fun setFabMainContentDescription(expanded: Boolean) {
         val resId = if (expanded) {R.string.content_description_add_new_content_expanded } else { R.string.content_description_add_new_content }
