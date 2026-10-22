@@ -800,7 +800,7 @@ class FileDisplayActivity : FileActivity(),
                 val currentDirDisplayed = mainFileListFragment?.getCurrentFile()
                 // If current file is null (we are in the spaces list, for example), close the app
                 if (currentDirDisplayed == null) {
-                    finish()
+                    moveTaskToBack(true)
                     return
                 }
                 // If current file is root folder
@@ -812,7 +812,7 @@ class FileDisplayActivity : FileActivity(),
                     }
                     // If current space is not a project space (personal or shares) or it is null ("Files" in oC10), close the app
                     else {
-                        finish()
+                        moveTaskToBack(true)
                         return
                     }
                 } else {
