@@ -776,14 +776,9 @@ class FileDisplayActivity : FileActivity(),
          *    2. close FAB if open (only if drawer isn't open)
          *    3. navigate up (only if drawer and FAB aren't open)
          */
-        if (isDrawerOpen() && isFabOpen) {
-            // close drawer first
-            super.onBackPressed()
-        } else if (isDrawerOpen() && !isFabOpen) {
-            // close drawer
-            super.onBackPressed()
-        } else if (!isDrawerOpen() && isFabOpen) {
-            // close fab
+        if (isDrawerOpen()) {
+            closeDrawer()
+        } else if (isFabOpen) {
             mainFileListFragment?.collapseFab()
         } else {
             // Every single menu is collapsed. We can navigate up.
