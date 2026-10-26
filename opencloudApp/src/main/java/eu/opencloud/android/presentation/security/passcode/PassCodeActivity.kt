@@ -452,6 +452,7 @@ class PassCodeActivity : AppCompatActivity(), NumberKeyboardListener, EnableBiom
             }
 
             KeyEvent.KEYCODE_ESCAPE -> {
+                onBackPressedDispatcher.onBackPressed()
                 true
             }
 
