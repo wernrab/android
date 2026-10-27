@@ -39,6 +39,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updatePadding
 import eu.opencloud.android.BuildConfig
@@ -78,6 +79,15 @@ class PassCodeActivity : AppCompatActivity(), NumberKeyboardListener, EnableBiom
     private var confirmingPassCode = false
     private val resultIntent = Intent()
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if ((ACTION_CREATE == intent.action && intent.extras?.getBoolean(EXTRAS_LOCK_ENFORCED) != true) || ACTION_REMOVE == intent.action) {
+                PassCodeManager.onActivityStopped(this@PassCodeActivity)
+                finish()
+            }
+        }
+    }
+
     /**
      * Initializes the activity.
      *
@@ -89,6 +99,8 @@ class PassCodeActivity : AppCompatActivity(), NumberKeyboardListener, EnableBiom
         this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
 
         subscribeToViewModel()
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         _binding = PasscodelockBinding.inflate(layoutInflater)
 
@@ -184,13 +196,8 @@ class PassCodeActivity : AppCompatActivity(), NumberKeyboardListener, EnableBiom
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
         return true
-    }
-
-    override fun onBackPressed() {
-        PassCodeManager.onActivityStopped(this)
-        super.onBackPressed()
     }
 
     private fun inflatePasscodeTxtLine() {
@@ -387,27 +394,6 @@ class PassCodeActivity : AppCompatActivity(), NumberKeyboardListener, EnableBiom
     }
 
     /**
-     * Overrides click on the BACK arrow to correctly cancel ACTION_ENABLE or ACTION_DISABLE, while
-     * preventing than ACTION_CHECK may be worked around.
-     *
-     * @param keyCode       Key code of the key that triggered the down event.
-     * @param event         Event triggered.
-     * @return              'True' when the key event was processed by this method.
-     */
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.repeatCount == 0) {
-            if ((ACTION_CREATE == intent.action &&
-                        intent.extras?.getBoolean(EXTRAS_LOCK_ENFORCED) != true) ||
-                ACTION_REMOVE == intent.action
-            ) {
-                finish()
-            } // else, do nothing, but report that the key was consumed to stay alive
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
-    }
-
-    /**
      * Saves the pass code input by the user as the current pass code.
      */
     private fun savePassCodeAndExit() {
@@ -451,7 +437,7 @@ class PassCodeActivity : AppCompatActivity(), NumberKeyboardListener, EnableBiom
         }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean =
-         when (keyCode) {
+        when (keyCode) {
 
             in KeyEvent.KEYCODE_0..KeyEvent.KEYCODE_9 -> {
                 val number = keyCode - KeyEvent.KEYCODE_0
@@ -462,12 +448,6 @@ class PassCodeActivity : AppCompatActivity(), NumberKeyboardListener, EnableBiom
 
             KeyEvent.KEYCODE_DEL -> {
                 passCodeViewModel.onBackspaceClicked()
-                true
-            }
-
-            KeyEvent.KEYCODE_ESCAPE -> {
-                PassCodeManager.onActivityStopped(this)
-                super.onBackPressed()
                 true
             }
 
